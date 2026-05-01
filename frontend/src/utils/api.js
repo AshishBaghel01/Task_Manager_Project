@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = "https://task-manager-project-backend.onrender.com/api";
 
 export async function apiRequest(path, options = {}) {
   const { token, body, headers, ...rest } = options;

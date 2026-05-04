@@ -1,5 +1,5 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/User");
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
 
 async function listMembers(_req, res) {
   const members = await User.find({ role: "member" }).select("-password").sort({ createdAt: -1 });
@@ -40,4 +40,4 @@ async function createMember(req, res) {
   });
 }
 
-module.exports = { listMembers, createMember };
+export { listMembers, createMember };

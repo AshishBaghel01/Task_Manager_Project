@@ -1,11 +1,6 @@
-const express = require("express");
-const {
-  listProjects,
-  createProject,
-  getProjectById,
-  updateMemberProgress,
-} = require("../controllers/projectController");
-const { protect, authorize } = require("../middleware/authMiddleware");
+import express from "express";
+import { listProjects, createProject, getProjectById, updateMemberProgress } from "../controllers/projectController.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -15,4 +10,4 @@ router.post("/", authorize("admin"), createProject);
 router.get("/:id", getProjectById);
 router.patch("/:id/members/:memberId/progress", authorize("member"), updateMemberProgress);
 
-module.exports = router;
+export default router;

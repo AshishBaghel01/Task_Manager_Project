@@ -482,7 +482,7 @@ select:focus {
 .member-create-card,
 .project-inspector,
 .project-tile {
-  border: 1px solid rgba(20, 65, 58, 0.1);
+  border: 2px solid rgba(14, 27, 25, 0.1);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 22px 48px rgba(30, 51, 48, 0.06);
@@ -1174,6 +1174,7 @@ select:focus {
   max-height: calc(100vh - 128px);
   overflow: auto;
   padding: 1.6rem;
+  background: white;
 }
 
 .close-inspector {

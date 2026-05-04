@@ -76,9 +76,4 @@ function serializeProject(project, viewerId) {
   };
 }
 
-module.exports = {
-  getProjectStatus,
-  getOverallCompletion,
-  getLeftDays,
-  serializeProject,
-};
+export { getProjectStatus, getOverallCompletion, getLeftDays, serializeProject };

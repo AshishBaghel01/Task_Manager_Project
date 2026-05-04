@@ -1,6 +1,6 @@
-const express = require("express");
-const { listMembers, createMember } = require("../controllers/userController");
-const { protect, authorize } = require("../middleware/authMiddleware");
+import express from "express";
+import { listMembers, createMember } from "../controllers/userController.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -8,4 +8,4 @@ router.use(protect, authorize("admin"));
 router.get("/members", listMembers);
 router.post("/members", createMember);
 
-module.exports = router;
+export default router;

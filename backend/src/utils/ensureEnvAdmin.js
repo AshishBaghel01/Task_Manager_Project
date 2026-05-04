@@ -1,5 +1,5 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/User");
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
 
 function getAdminName(email) {
   const localPart = email.split("@")[0] || "Admin";
@@ -37,4 +37,4 @@ async function ensureEnvAdmin() {
   });
 }
 
-module.exports = ensureEnvAdmin;
+export default ensureEnvAdmin;

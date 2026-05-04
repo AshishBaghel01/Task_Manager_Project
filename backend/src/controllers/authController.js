@@ -1,6 +1,6 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/User");
-const { signToken } = require("../utils/token");
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
+import { signToken } from "../utils/token.js";
 
 function sanitizeUser(user) {
   return {
@@ -94,10 +94,4 @@ async function getMe(req, res) {
   res.json({ success: true, data: { user: sanitizeUser(req.user) } });
 }
 
-module.exports = {
-  getBootstrap,
-  setupAdmin,
-  registerMember,
-  login,
-  getMe,
-};
+export { getBootstrap, setupAdmin, registerMember, login, getMe };

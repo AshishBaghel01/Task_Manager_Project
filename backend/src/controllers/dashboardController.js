@@ -1,5 +1,5 @@
-const Project = require("../models/Project");
-const { getProjectStatus, getOverallCompletion, serializeProject } = require("../utils/projectMetrics");
+import Project from "../models/Project.js";
+import { getProjectStatus, getOverallCompletion, serializeProject } from "../utils/projectMetrics.js";
 
 async function getDashboard(req, res) {
   const query =
@@ -79,4 +79,4 @@ async function getDashboard(req, res) {
   });
 }
 
-module.exports = { getDashboard };
+export { getDashboard };

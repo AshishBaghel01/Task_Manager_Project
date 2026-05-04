@@ -1,6 +1,6 @@
-const Project = require("../models/Project");
-const User = require("../models/User");
-const { serializeProject } = require("../utils/projectMetrics");
+import Project from "../models/Project.js";
+import User from "../models/User.js";
+import { serializeProject } from "../utils/projectMetrics.js";
 
 async function listProjects(req, res) {
   const query =
@@ -114,9 +114,4 @@ async function updateMemberProgress(req, res) {
   });
 }
 
-module.exports = {
-  listProjects,
-  createProject,
-  getProjectById,
-  updateMemberProgress,
-};
+export { listProjects, createProject, getProjectById, updateMemberProgress };

@@ -47,39 +47,16 @@ export default function AuthScreen({
             >
               Sign Up
             </button>
+            <button
+              type="button"
+              className={mode === "admin" ? "active" : ""}
+              onClick={() => setMode("admin")}
+            >
+              Admin
+            </button>
           </div>
 
-          {mode === "login" ? (
-            <form className="auth-form" onSubmit={onLogin}>
-              <div className="input-group">
-                <label htmlFor="login-email">Email Address</label>
-                <input
-                  id="login-email"
-                  name="email"
-                  onChange={onLoginChange}
-                  placeholder="admin@company.com"
-                  type="email"
-                  value={loginForm.email}
-                />
-              </div>
-
-              <div className="input-group">
-                <label htmlFor="login-password">Password</label>
-                <input
-                  id="login-password"
-                  name="password"
-                  onChange={onLoginChange}
-                  placeholder="Enter password"
-                  type="password"
-                  value={loginForm.password}
-                />
-              </div>
-
-              <button disabled={loading} type="submit">
-                {loading ? "Signing in..." : "Login"}
-              </button>
-            </form>
-          ) : (
+          {mode === "signup" ? (
             <form className="auth-form" onSubmit={onSignup}>
               <div className="input-group">
                 <label htmlFor="signup-name">Full name</label>
@@ -118,6 +95,107 @@ export default function AuthScreen({
                 {loading ? "Creating..." : "Create member account"}
               </button>
             </form>
+          ) : mode === "admin" ? (
+            hasAdmin ? (
+              <form className="auth-form" onSubmit={onLogin}>
+                <div className="input-group">
+                  <label htmlFor="login-email">Admin Email Address</label>
+                  <input
+                    id="login-email"
+                    name="email"
+                    onChange={onLoginChange}
+                    placeholder="admin@company.com"
+                    type="email"
+                    value={loginForm.email}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="login-password">Password</label>
+                  <input
+                    id="login-password"
+                    name="password"
+                    onChange={onLoginChange}
+                    placeholder="Enter password"
+                    type="password"
+                    value={loginForm.password}
+                  />
+                </div>
+
+                <button disabled={loading} type="submit">
+                  {loading ? "Signing in..." : "Login as admin"}
+                </button>
+              </form>
+            ) : (
+              <form className="auth-form" onSubmit={onSetupAdmin}>
+                <div className="input-group">
+                  <label htmlFor="setup-name">Admin name</label>
+                  <input
+                    id="setup-name"
+                    name="name"
+                    onChange={onSetupChange}
+                    placeholder="Your name"
+                    type="text"
+                    value={setupForm.name}
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="setup-email">Admin Email Address</label>
+                  <input
+                    id="setup-email"
+                    name="email"
+                    onChange={onSetupChange}
+                    placeholder="admin@company.com"
+                    type="email"
+                    value={setupForm.email}
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="setup-password">Password</label>
+                  <input
+                    id="setup-password"
+                    name="password"
+                    onChange={onSetupChange}
+                    placeholder="Create password"
+                    type="password"
+                    value={setupForm.password}
+                  />
+                </div>
+                <button disabled={loading} type="submit">
+                  {loading ? "Creating..." : "Create admin account"}
+                </button>
+              </form>
+            )
+          ) : (
+            <form className="auth-form" onSubmit={onLogin}>
+              <div className="input-group">
+                <label htmlFor="login-email">Email Address</label>
+                <input
+                  id="login-email"
+                  name="email"
+                  onChange={onLoginChange}
+                  placeholder="you@company.com"
+                  type="email"
+                  value={loginForm.email}
+                />
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="login-password">Password</label>
+                <input
+                  id="login-password"
+                  name="password"
+                  onChange={onLoginChange}
+                  placeholder="Enter password"
+                  type="password"
+                  value={loginForm.password}
+                />
+              </div>
+
+              <button disabled={loading} type="submit">
+                {loading ? "Signing in..." : "Login"}
+              </button>
+            </form>
           )}
 
           <p className="auth-legal">
@@ -129,9 +207,17 @@ export default function AuthScreen({
               <>
                 Don&apos;t have an account? <button type="button" className="link-button" onClick={() => setMode("signup")}>Sign Up</button>
               </>
-            ) : (
+            ) : mode === "signup" ? (
               <>
                 Already have an account? <button type="button" className="link-button" onClick={() => setMode("login")}>Login</button>
+              </>
+            ) : (
+              <>
+                {hasAdmin ? (
+                  <>Already have an admin account? Use the login form above.</>
+                ) : (
+                  <>No admin exists yet. Fill the form above to create the first admin account.</>
+                )}
               </>
             )}
           </p>
@@ -139,7 +225,7 @@ export default function AuthScreen({
           {error ? <p className="form-error">{error}</p> : null}
         </div>
 
-        {!hasAdmin ? (
+        {!hasAdmin && mode !== "admin" ? (
           <div className="admin-setup-card">
             <div className="section-title-row">
               <h3>First-time admin setup</h3>

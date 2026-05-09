@@ -70,15 +70,24 @@ async function registerMember(req, res) {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body;
+  const { email, password, role = "member" } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ success: false, message: "Email and password are required." });
   }
 
+  if (!["admin", "member"].includes(role)) {
+    return res.status(400).json({ success: false, message: "Choose a valid account type." });
+  }
+
   const user = await User.findOne({ email: email.toLowerCase() });
   if (!user) {
     return res.status(401).json({ success: false, message: "Invalid email or password." });
+  }
+
+  if (user.role !== role) {
+    const accountType = role === "admin" ? "admin" : "member";
+    return res.status(403).json({ success: false, message: `This email cannot login as ${accountType}.` });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);

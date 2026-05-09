@@ -70,7 +70,7 @@ export default function AuthScreen({
 
           {adminEnabled ? (
             hasAdmin ? (
-              <form className="auth-form" onSubmit={onLogin}>
+              <form className="auth-form" onSubmit={(event) => onLogin(event, "admin")}>
                 <div className="input-group">
                   <label htmlFor="login-email">Admin Email Address</label>
                   <input
@@ -179,7 +179,7 @@ export default function AuthScreen({
               </button>
             </form>
           ) : (
-            <form className="auth-form" onSubmit={onLogin}>
+            <form className="auth-form" onSubmit={(event) => onLogin(event, "member")}>
               <div className="input-group">
                 <label htmlFor="login-email">Email Address</label>
                 <input

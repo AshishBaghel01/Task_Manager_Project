@@ -90,14 +90,14 @@ export function useWorkspace() {
     await loadSession(activeToken);
   }
 
-  async function handleLogin(event) {
+  async function handleLogin(event, role = "member") {
     event.preventDefault();
     setLoading(true);
     setError("");
     setSuccessMessage("");
 
     try {
-      const response = await apiRequest("/auth/login", { method: "POST", body: loginForm });
+      const response = await apiRequest("/auth/login", { method: "POST", body: { ...loginForm, role } });
       persistSession(response.data.token, response.data.user);
       setLoginForm(emptyLogin);
     } catch (requestError) {

@@ -4,7 +4,7 @@ import { getProjectStatus, getOverallCompletion, serializeProject } from "../uti
 async function getDashboard(req, res) {
   const query =
     req.user.role === "admin"
-      ? {}
+      ? { createdBy: req.user._id }
       : {
           "members.user": req.user._id,
         };

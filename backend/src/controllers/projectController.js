@@ -5,7 +5,7 @@ import { serializeProject } from "../utils/projectMetrics.js";
 async function listProjects(req, res) {
   const query =
     req.user.role === "admin"
-      ? {}
+      ? { createdBy: req.user._id }
       : {
           "members.user": req.user._id,
         };
@@ -68,6 +68,10 @@ async function getProjectById(req, res) {
 
   if (!project) {
     return res.status(404).json({ success: false, message: "Project not found." });
+  }
+
+  if (req.user.role === "admin" && String(project.createdBy) !== String(req.user._id)) {
+    return res.status(403).json({ success: false, message: "You can only access your own projects." });
   }
 
   if (

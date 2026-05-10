@@ -7,6 +7,7 @@ export default function AuthScreen({
   setupForm,
   loading,
   error,
+  onCreateAdmin,
   onLoginChange,
   onSignup,
   onSignupChange,
@@ -36,23 +37,19 @@ export default function AuthScreen({
           <div className="auth-mode-switch">
             <button
               type="button"
-              className={!adminEnabled && mode === "login" ? "active" : ""}
+              className={mode === "login" ? "active" : ""}
               onClick={() => {
-                setAdminEnabled(false);
                 setMode("login");
               }}
-              disabled={adminEnabled}
             >
               Login
             </button>
             <button
               type="button"
-              className={!adminEnabled && mode === "signup" ? "active" : ""}
+              className={mode === "signup" ? "active" : ""}
               onClick={() => {
-                setAdminEnabled(false);
                 setMode("signup");
               }}
-              disabled={adminEnabled}
             >
               Sign Up
             </button>
@@ -70,35 +67,76 @@ export default function AuthScreen({
 
           {adminEnabled ? (
             hasAdmin ? (
-              <form className="auth-form" onSubmit={(event) => onLogin(event, "admin")}>
-                <div className="input-group">
-                  <label htmlFor="login-email">Admin Email Address</label>
-                  <input
-                    id="login-email"
-                    name="email"
-                    onChange={onLoginChange}
-                    placeholder="admin@company.com"
-                    type="email"
-                    value={loginForm.email}
-                  />
-                </div>
+              mode === "signup" ? (
+                <form className="auth-form" onSubmit={onCreateAdmin}>
+                  <div className="input-group">
+                    <label htmlFor="setup-name">Admin name</label>
+                    <input
+                      id="setup-name"
+                      name="name"
+                      onChange={onSetupChange}
+                      placeholder="Your name"
+                      type="text"
+                      value={setupForm.name}
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label htmlFor="setup-email">Admin Email Address</label>
+                    <input
+                      id="setup-email"
+                      name="email"
+                      onChange={onSetupChange}
+                      placeholder="admin@company.com"
+                      type="email"
+                      value={setupForm.email}
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label htmlFor="setup-password">Password</label>
+                    <input
+                      id="setup-password"
+                      name="password"
+                      onChange={onSetupChange}
+                      placeholder="Create password"
+                      type="password"
+                      value={setupForm.password}
+                    />
+                  </div>
+                  <button disabled={loading} type="submit">
+                    {loading ? "Creating..." : "Create admin account"}
+                  </button>
+                </form>
+              ) : (
+                <form className="auth-form" onSubmit={(event) => onLogin(event, "admin")}>
+                  <div className="input-group">
+                    <label htmlFor="login-email">Admin Email Address</label>
+                    <input
+                      id="login-email"
+                      name="email"
+                      onChange={onLoginChange}
+                      placeholder="admin@company.com"
+                      type="email"
+                      value={loginForm.email}
+                    />
+                  </div>
 
-                <div className="input-group">
-                  <label htmlFor="login-password">Password</label>
-                  <input
-                    id="login-password"
-                    name="password"
-                    onChange={onLoginChange}
-                    placeholder="Enter password"
-                    type="password"
-                    value={loginForm.password}
-                  />
-                </div>
+                  <div className="input-group">
+                    <label htmlFor="login-password">Password</label>
+                    <input
+                      id="login-password"
+                      name="password"
+                      onChange={onLoginChange}
+                      placeholder="Enter password"
+                      type="password"
+                      value={loginForm.password}
+                    />
+                  </div>
 
-                <button disabled={loading} type="submit">
-                  {loading ? "Signing in..." : "Login as admin"}
-                </button>
-              </form>
+                  <button disabled={loading} type="submit">
+                    {loading ? "Signing in..." : "Login as admin"}
+                  </button>
+                </form>
+              )
             ) : (
               <form className="auth-form" onSubmit={onSetupAdmin}>
                 <div className="input-group">
@@ -217,7 +255,15 @@ export default function AuthScreen({
           <p className="auth-toggle-copy">
             {adminEnabled ? (
               hasAdmin ? (
-                <>Admin mode is enabled. Use the form above to sign in as admin.</>
+                mode === "login" ? (
+                  <>
+                    Need another admin? <button type="button" className="link-button" onClick={() => setMode("signup")}>Create Admin</button>
+                  </>
+                ) : (
+                  <>
+                    Already have an admin account? <button type="button" className="link-button" onClick={() => setMode("login")}>Login</button>
+                  </>
+                )
               ) : (
                 <>Admin mode is enabled. Create the first admin account above.</>
               )

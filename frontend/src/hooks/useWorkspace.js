@@ -124,6 +124,24 @@ export function useWorkspace() {
     }
   }
 
+  async function handleCreateAdmin(event) {
+    event.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      const response = await apiRequest("/auth/register-admin", { method: "POST", body: setupForm });
+      setHasAdmin(true);
+      persistSession(response.data.token, response.data.user);
+      setSetupForm(emptySetup);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleSignup(event) {
     event.preventDefault();
     setLoading(true);
@@ -256,6 +274,7 @@ export function useWorkspace() {
     dashboardLoading,
     error,
     handleCreateMember,
+    handleCreateAdmin,
     handleCreateProject,
     handleLogin,
     handleLogout,

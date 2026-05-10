@@ -26,6 +26,7 @@ function AppContent() {
     dashboard,
     dashboardLoading,
     error,
+    handleCreateAdmin,
     handleLogin,
     handleLogout,
     handleSetupAdmin,
@@ -58,6 +59,7 @@ function AppContent() {
         loading={loading}
         loginForm={loginForm}
         signupForm={signupForm}
+        onCreateAdmin={handleCreateAdmin}
         onLogin={handleLogin}
         onLoginChange={(event) => setLoginForm({ ...loginForm, [event.target.name]: event.target.value })}
         onSignup={handleSignup}

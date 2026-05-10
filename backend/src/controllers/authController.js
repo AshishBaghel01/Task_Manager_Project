@@ -45,6 +45,30 @@ async function setupAdmin(req, res) {
   res.status(201).json({ success: true, message: "Admin account created.", data: { token, user: sanitizeUser(user) } });
 }
 
+async function registerAdmin(req, res) {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, message: "Name, email and password are required." });
+  }
+
+  const existingUser = await User.exists({ email: email.toLowerCase() });
+  if (existingUser) {
+    return res.status(409).json({ success: false, message: "Email is already in use." });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({
+    name,
+    email: email.toLowerCase(),
+    password: hashedPassword,
+    role: "admin",
+  });
+
+  const token = signToken(user);
+  res.status(201).json({ success: true, message: "Admin account created.", data: { token, user: sanitizeUser(user) } });
+}
+
 async function registerMember(req, res) {
   const { name, email, password } = req.body;
 
@@ -103,4 +127,4 @@ async function getMe(req, res) {
   res.json({ success: true, data: { user: sanitizeUser(req.user) } });
 }
 
-export { getBootstrap, setupAdmin, registerMember, login, getMe };
+export { getBootstrap, setupAdmin, registerAdmin, registerMember, login, getMe };

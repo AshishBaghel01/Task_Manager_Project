@@ -18,16 +18,29 @@ async function ensureEnvAdmin() {
     return;
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
   const existingAdmin = await User.findOne({ email });
 
   if (existingAdmin) {
-    existingAdmin.name = existingAdmin.name || getAdminName(email);
-    existingAdmin.password = hashedPassword;
-    existingAdmin.role = "admin";
-    await existingAdmin.save();
+    const isCurrentPassword = await bcrypt.compare(password, existingAdmin.password);
+    let shouldSave = false;
+
+    if (!existingAdmin.name) {
+      existingAdmin.name = getAdminName(email);
+      shouldSave = true;
+    }
+    if (!isCurrentPassword) {
+      existingAdmin.password = await bcrypt.hash(password, 10);
+      shouldSave = true;
+    }
+    if (existingAdmin.role !== "admin") {
+      existingAdmin.role = "admin";
+      shouldSave = true;
+    }
+    if (shouldSave) await existingAdmin.save();
     return;
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   await User.create({
     name: getAdminName(email),

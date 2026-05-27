@@ -14,9 +14,10 @@ const TOKEN_KEY = "task_manager_token";
 const emptyDashboard = { role: "", stats: {}, projects: [] };
 
 export function useWorkspace() {
-  const [token, setToken] = useState(localStorage.getItem(TOKEN_KEY) || "");
+  const savedToken = localStorage.getItem(TOKEN_KEY) || "";
+  const [token, setToken] = useState(savedToken);
   const [user, setUser] = useState(null);
-  const [bootstrapLoading, setBootstrapLoading] = useState(true);
+  const [bootstrapLoading, setBootstrapLoading] = useState(Boolean(savedToken));
   const [loading, setLoading] = useState(false);
   const [dashboardLoading, setDashboardLoading] = useState(false);
   const [updatingProgress, setUpdatingProgress] = useState(false);
@@ -68,22 +69,52 @@ export function useWorkspace() {
   }, []);
 
   useEffect(() => {
-    async function initialize() {
+    let ignore = false;
+
+    async function loadBootstrapState() {
       try {
         const bootstrapResponse = await apiRequest("/auth/bootstrap");
-        setHasAdmin(bootstrapResponse.data.hasAdmin);
-        if (token) await loadSession(token);
+        if (!ignore) setHasAdmin(bootstrapResponse.data.hasAdmin);
       } catch (requestError) {
+        if (!ignore && token) setError(requestError.message);
+      }
+    }
+
+    loadBootstrapState();
+
+    return () => {
+      ignore = true;
+    };
+  }, [token]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function initializeSession() {
+      if (!token) {
+        setBootstrapLoading(false);
+        return;
+      }
+
+      setBootstrapLoading(true);
+      try {
+        await loadSession(token);
+      } catch (requestError) {
+        if (ignore) return;
         localStorage.removeItem(TOKEN_KEY);
         setToken("");
         setUser(null);
         setError(requestError.message);
       } finally {
-        setBootstrapLoading(false);
+        if (!ignore) setBootstrapLoading(false);
       }
     }
 
-    initialize();
+    initializeSession();
+
+    return () => {
+      ignore = true;
+    };
   }, [loadSession, token]);
 
   async function refreshData(activeToken = token) {

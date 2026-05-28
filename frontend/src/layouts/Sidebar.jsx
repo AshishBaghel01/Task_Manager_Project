@@ -1,10 +1,13 @@
+import { motion } from "framer-motion";
+import { CalendarDays, FolderKanban, Gauge, HelpCircle, LogOut, Plus } from "lucide-react";
+import { Button } from "../components/ui/button";
 import { initials } from "../utils/project";
 
 export default function Sidebar({ activeView, isAdmin, onCreate, onLogout, onNavigate, user }) {
   const links = [
-    { id: "dashboard", label: "Dashboard", icon: "[]" },
-    { id: "projects", label: "Projects", icon: "<>" },
-    { id: "calendar", label: "Calendar", icon: "##" },
+    { id: "dashboard", label: "Dashboard", icon: Gauge },
+    { id: "projects", label: "Projects", icon: FolderKanban },
+    { id: "calendar", label: "Calendar", icon: CalendarDays },
   ];
 
   return (
@@ -17,37 +20,41 @@ export default function Sidebar({ activeView, isAdmin, onCreate, onLogout, onNav
       </div>
 
       <nav className="side-nav">
-        {links.map((link) => (
+        {links.map((link, index) => {
+          const Icon = link.icon;
+          return (
           <button
             className={activeView === link.id ? "active" : ""}
             key={link.id}
             onClick={() => onNavigate(link.id)}
+            style={{ "--item-index": index }}
             type="button"
           >
-            <span>{link.icon}</span>
+            <Icon size={20} />
             {link.label}
           </button>
-        ))}
+          );
+        })}
       </nav>
 
       {isAdmin ? (
-        <button className="create-side-button" onClick={onCreate} type="button">
-          + Create Project
-        </button>
+        <Button className="create-side-button" onClick={onCreate} size="pill" type="button">
+          <Plus size={18} /> Create Project
+        </Button>
       ) : null}
 
       <div className="side-footer">
-        <button type="button">? Support</button>
+        <button type="button"><HelpCircle size={18} /> Support</button>
         <button onClick={onLogout} type="button">
-          {"->"} Logout
+          <LogOut size={18} /> Logout
         </button>
-        <div className="mini-profile">
+        <motion.div className="mini-profile" whileHover={{ x: 4 }}>
           <span>{initials(user.name)}</span>
           <div>
             <strong>{user.name}</strong>
             <small>{isAdmin ? "Administrator" : "Team Member"}</small>
           </div>
-        </div>
+        </motion.div>
       </div>
     </aside>
   );

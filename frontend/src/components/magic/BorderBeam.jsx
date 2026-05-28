@@ -1,0 +1,3 @@
+export default function BorderBeam() {
+  return <span className="border-beam" aria-hidden="true" />;
+}

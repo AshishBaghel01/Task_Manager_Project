@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertTriangle, CheckCircle2, MoreHorizontal, Plus } from "lucide-react";
 import AvatarStack from "../../components/common/AvatarStack";
 import EmptyState from "../../components/common/EmptyState";
 import ProgressBar from "../../components/common/ProgressBar";
@@ -39,7 +41,8 @@ export default function ProjectsView({ isAdmin, onCreate, onSelectProject, proje
       </div>
 
       {visibleProjects.length ? (
-        <div className={isAdmin ? "directory-list" : "member-project-grid"}>
+        <motion.div className={isAdmin ? "directory-list" : "member-project-grid"} layout>
+          <AnimatePresence>
           {visibleProjects.map((project) =>
             isAdmin ? (
               <DirectoryRow key={project.id} onSelect={() => onSelectProject(project)} project={project} />
@@ -47,14 +50,15 @@ export default function ProjectsView({ isAdmin, onCreate, onSelectProject, proje
               <MemberProjectCard key={project.id} onSelect={() => onSelectProject(project)} project={project} user={user} />
             )
           )}
-        </div>
+          </AnimatePresence>
+        </motion.div>
       ) : (
         <EmptyState title="No projects match this view." text="Choose another sorting option or create a matching project." />
       )}
 
       {isAdmin ? (
         <button className="floating-action" onClick={onCreate} type="button">
-          +
+          <Plus size={30} />
         </button>
       ) : null}
     </section>
@@ -63,8 +67,17 @@ export default function ProjectsView({ isAdmin, onCreate, onSelectProject, proje
 
 function DirectoryRow({ onSelect, project }) {
   return (
-    <button className={`directory-row ${statusClass(project.status)}`} onClick={onSelect} type="button">
-      <span className="row-icon">{project.status === "overdue" ? "!" : "OK"}</span>
+    <motion.button
+      className={`directory-row ${statusClass(project.status)}`}
+      exit={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      layout
+      onClick={onSelect}
+      type="button"
+      whileHover={{ x: 6 }}
+    >
+      <span className="row-icon">{project.status === "overdue" ? <AlertTriangle size={22} /> : <CheckCircle2 size={22} />}</span>
       <span className="row-main">
         <strong>{project.name}</strong>
         <small>Created {formatDate(project.createdAt, { year: "numeric" })} - ID: PM-{String(project.id).slice(-4).toUpperCase()}</small>
@@ -75,8 +88,8 @@ function DirectoryRow({ onSelect, project }) {
       </span>
       <strong>{project.overallCompletion}%</strong>
       <span className={`pill ${statusClass(project.status)}`}>{statusLabels[project.status]}</span>
-      <span className="more-dot">...</span>
-    </button>
+      <span className="more-dot"><MoreHorizontal size={20} /></span>
+    </motion.button>
   );
 }
 
@@ -84,9 +97,19 @@ function MemberProjectCard({ onSelect, project, user }) {
   const member = project.members.find((item) => item.user.id === user.id);
 
   return (
-    <button className="member-project-card" onClick={onSelect} type="button">
+    <motion.button
+      className="member-project-card"
+      exit={{ opacity: 0, scale: 0.98 }}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      layout
+      onClick={onSelect}
+      type="button"
+      whileHover={{ y: -7 }}
+      whileTap={{ scale: 0.98 }}
+    >
       <span className={`pill ${statusClass(project.status)}`}>{statusLabels[project.status]}</span>
-      <span className="more-dot">...</span>
+      <span className="more-dot"><MoreHorizontal size={20} /></span>
       <h3>{project.name}</h3>
       <p>{member?.assignedTask || project.description}</p>
       <div className="progress-line">
@@ -98,6 +121,6 @@ function MemberProjectCard({ onSelect, project, user }) {
         <AvatarStack members={project.members} />
         <span>{project.status === "overdue" ? `Expired ${formatDate(project.endDate)}` : formatDate(project.endDate)}</span>
       </div>
-    </button>
+    </motion.button>
   );
 }

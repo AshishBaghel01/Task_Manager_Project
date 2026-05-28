@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { AlertTriangle, ArrowRight, CheckCircle2, Clock3, Layers3 } from "lucide-react";
 import heroImage from "../../assets/hero.png";
 import AvatarStack from "../../components/common/AvatarStack";
 import EmptyState from "../../components/common/EmptyState";
@@ -12,21 +14,21 @@ export default function DashboardView({ dashboard, isAdmin, onNavigate, onSelect
 
   return (
     <div className={isAdmin ? "dashboard-grid admin-dashboard" : "dashboard-grid member-dashboard"}>
-      <section className="stat-row">
+      <motion.section className="stat-row" initial="hidden" animate="show" variants={staggerGroup}>
         {isAdmin ? (
           <>
-            <MetricCard accent="mint" label="Total Projects Completed" trend=" " value={stats.completedProjects || 0} />
-            <MetricCard accent="teal" label="Ongoing Projects" trend="Active Now" value={stats.ongoingProjects || 0} />
-            <MetricCard accent="red" label="Overdue Projects" trend="Action Required" value={stats.overdueProjects || 0} />
+            <MetricCard accent="mint" icon={CheckCircle2} label="Total Projects Completed" trend="Delivered" value={stats.completedProjects || 0} />
+            <MetricCard accent="teal" icon={Layers3} label="Ongoing Projects" trend="Active Now" value={stats.ongoingProjects || 0} />
+            <MetricCard accent="red" icon={AlertTriangle} label="Overdue Projects" trend="Action Required" value={stats.overdueProjects || 0} />
           </>
         ) : (
           <>
-            <MetricCard accent="aqua" label="Total Tasks Assigned" trend="+12%" value={stats.totalTasks || 0} />
-            <MetricCard accent="mint" label="Completed Tasks" trend={`${stats.completedTasks || 0} done`} value={stats.completedTasks || 0} />
-            <MetricCard accent="red" label="Overdue Tasks" trend="Action Needed" value={stats.overdueTasks || 0} />
+            <MetricCard accent="aqua" icon={Layers3} label="Total Tasks Assigned" trend="+12%" value={stats.totalTasks || 0} />
+            <MetricCard accent="mint" icon={CheckCircle2} label="Completed Tasks" trend={`${stats.completedTasks || 0} done`} value={stats.completedTasks || 0} />
+            <MetricCard accent="red" icon={AlertTriangle} label="Overdue Tasks" trend="Action Needed" value={stats.overdueTasks || 0} />
           </>
         )}
-      </section>
+      </motion.section>
 
       <section className="main-panel">
         <div className="section-heading">
@@ -35,7 +37,7 @@ export default function DashboardView({ dashboard, isAdmin, onNavigate, onSelect
             <p>{isAdmin ? "Project health, team output, and active timelines." : "Manage and track your active initiatives."}</p>
           </div>
           <button onClick={() => onNavigate("projects")} type="button">
-            View All Projects {"->"}
+            View All Projects <ArrowRight size={17} />
           </button>
         </div>
 
@@ -73,16 +75,16 @@ export default function DashboardView({ dashboard, isAdmin, onNavigate, onSelect
   );
 }
 
-function MetricCard({ accent, label, trend, value }) {
+function MetricCard({ accent, icon: Icon, label, trend, value }) {
   return (
-    <article className={`metric-card ${accent}`}>
+    <motion.article className={`metric-card ${accent}`} variants={cardIn} whileHover={{ y: -6, scale: 1.01 }}>
       <div className="metric-top">
-        <span className="metric-icon">OK</span>
+        <span className="metric-icon"><Icon size={25} /></span>
         <small>{trend}</small>
       </div>
       <p>{label}</p>
       <strong>{String(value).padStart(label.includes("Overdue") ? 2 : 0, "0")}</strong>
-    </article>
+    </motion.article>
   );
 }
 
@@ -97,7 +99,7 @@ function ProjectTable({ onSelectProject, projects }) {
         <span>Timeline</span>
       </div>
       {projects.map((project) => (
-        <button className="table-row" key={project.id} onClick={() => onSelectProject(project)} type="button">
+        <motion.button className="table-row" key={project.id} onClick={() => onSelectProject(project)} type="button" whileHover={{ x: 6 }}>
           <span>
             <strong>{project.name}</strong>
             <small>ID: {String(project.id).slice(-6).toUpperCase()}</small>
@@ -107,7 +109,7 @@ function ProjectTable({ onSelectProject, projects }) {
             <strong>{project.overallCompletion}%</strong>
             <ProgressBar progress={project.overallCompletion} status={project.status} />
           </span>
-        </button>
+        </motion.button>
       ))}
     </div>
   );
@@ -117,7 +119,7 @@ function ProjectTile({ image, onSelect, project, user }) {
   const member = project.members.find((item) => item.user.id === user.id);
 
   return (
-    <button className="project-tile" onClick={onSelect} type="button">
+    <motion.button className="project-tile" onClick={onSelect} type="button" whileHover={{ y: -7 }} whileTap={{ scale: 0.98 }}>
       <div className="tile-media" style={image ? { backgroundImage: `url(${image})` } : undefined}>
         <span className={`pill ${statusClass(project.status)}`}>{statusLabels[project.status]}</span>
       </div>
@@ -132,7 +134,7 @@ function ProjectTile({ image, onSelect, project, user }) {
         <AvatarStack members={project.members} />
         <span>{formatDate(project.endDate)}</span>
       </div>
-    </button>
+    </motion.button>
   );
 }
 
@@ -144,7 +146,7 @@ function MiniCalendar({ projects }) {
     <div className="mini-calendar">
       <div className="mini-cal-top">
         <h3>Deadline Calendar</h3>
-        <span>{"< >"}</span>
+        <span><Clock3 size={18} /></span>
       </div>
       <div className="mini-cal-grid weekdays">
         {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => <strong key={`${day}-${index}`}>{day}</strong>)}
@@ -155,3 +157,17 @@ function MiniCalendar({ projects }) {
     </div>
   );
 }
+
+const staggerGroup = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardIn = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.32, ease: "easeOut" } },
+};

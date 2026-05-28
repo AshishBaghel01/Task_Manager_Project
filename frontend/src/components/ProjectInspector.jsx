@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
 import { statusLabels } from "../constants/project";
 import { formatDate, initials, statusClass } from "../utils/project";
 import ProgressBar from "./common/ProgressBar";
@@ -8,8 +10,14 @@ export default function ProjectInspector({ currentUser, onClose, onUpdateProgres
   const selfAssignment = project.members.find((member) => member.user.id === currentUser.id);
 
   return (
-    <aside className="project-inspector">
-      <button className="close-inspector" onClick={onClose} type="button">x</button>
+    <motion.aside
+      className="project-inspector"
+      initial={{ opacity: 0, x: 36 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 36 }}
+      transition={{ duration: 0.28, ease: "easeOut" }}
+    >
+      <button className="close-inspector" onClick={onClose} type="button"><X size={18} /></button>
       <span className={`pill ${statusClass(project.status)}`}>{statusLabels[project.status]}</span>
       <h2>{project.name}</h2>
       <p>{project.description}</p>
@@ -28,7 +36,7 @@ export default function ProjectInspector({ currentUser, onClose, onUpdateProgres
             currentUser.role === "admin" ? true : member.user.id === currentUser.id
           )
           .map((member) => (
-            <article className={member.user.id === currentUser.id ? "self" : ""} key={member.id}>
+            <motion.article className={member.user.id === currentUser.id ? "self" : ""} key={member.id} whileHover={{ x: 4 }}>
               <span>{initials(member.user.name)}</span>
               <div>
                 <strong>{member.user.name}</strong>
@@ -36,7 +44,7 @@ export default function ProjectInspector({ currentUser, onClose, onUpdateProgres
                 <ProgressBar progress={member.progress} status={project.status} />
               </div>
               <em>{member.progress}%</em>
-            </article>
+            </motion.article>
           ))}
       </div>
 
@@ -56,6 +64,6 @@ export default function ProjectInspector({ currentUser, onClose, onUpdateProgres
           <button disabled={updatingProgress} type="submit">{updatingProgress ? "Saving..." : "Update Progress"}</button>
         </form>
       ) : null}
-    </aside>
+    </motion.aside>
   );
 }

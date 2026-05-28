@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import ProjectInspector from "./ProjectInspector";
 import AppLayout from "../layouts/AppLayout";
 import AdminCalendarPage from "../pages/admin/AdminCalendarPage";
@@ -39,13 +40,17 @@ export default function WorkspaceShell({
     >
       {mountPage(activeView, isAdmin)}
 
-      <ProjectInspector
-        currentUser={user}
-        onClose={() => setSelectedProjectId("")}
-        onUpdateProgress={handleUpdateProgress}
-        project={selectedProject}
-        updatingProgress={updatingProgress}
-      />
+      <AnimatePresence>
+        {selectedProject ? (
+          <ProjectInspector
+            currentUser={user}
+            onClose={() => setSelectedProjectId("")}
+            onUpdateProgress={handleUpdateProgress}
+            project={selectedProject}
+            updatingProgress={updatingProgress}
+          />
+        ) : null}
+      </AnimatePresence>
     </AppLayout>
   );
 }

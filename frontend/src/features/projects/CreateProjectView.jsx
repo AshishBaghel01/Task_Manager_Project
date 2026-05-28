@@ -22,14 +22,14 @@ export default function CreateProjectView({
     <section className="create-page">
       <div className="create-intro">
         <h2>Initialize New Workflow</h2>
-        <p>Configure your project parameters and assemble your core team to begin high-velocity collaboration.</p>
+        <p>Set up your project parameters and assemble your core team to begin project collaboration.</p>
       </div>
 
       <form className="create-card" onSubmit={onCreateProject}>
-        <h3>i Primary Details</h3>
+        <h3>Primary Details</h3>
         <label>
           Project Name
-          <input name="name" onChange={onProjectChange} placeholder="e.g., Q4 Strategic Infrastructure Migration" value={projectForm.name} />
+          <input name="name" onChange={onProjectChange} placeholder="eg..  Real Estate Infrastructure " value={projectForm.name} />
         </label>
         <label>
           Description
@@ -57,7 +57,7 @@ export default function CreateProjectView({
             ))}
           </select>
           <input name="role" onChange={onAssignmentChange} placeholder="Role" value={assignmentForm.role} />
-          <input name="assignedTask" onChange={onAssignmentChange} placeholder="Task: e.g., Update API docs" value={assignmentForm.assignedTask} />
+          <input name="assignedTask" onChange={onAssignmentChange} placeholder="Task: eg.. Update Client API" value={assignmentForm.assignedTask} />
           <button onClick={onAddAssignment} type="button">+ Assign</button>
         </div>
 

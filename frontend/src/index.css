@@ -469,9 +469,9 @@ select:focus {
 
 .promo-panel h2 {
   margin: 0;
-  font-size: clamp(1.2rem, 2.2vw, 3.25rem);
-  line-height: 1.02;
-  max-width: 520px;
+  font-size: clamp(1.2rem, 1.7vw, 3.25rem);
+  line-height: 1.2;
+  max-width: 700px;
 }
 
 .promo-panel p {

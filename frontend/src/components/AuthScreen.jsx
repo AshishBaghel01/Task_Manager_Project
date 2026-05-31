@@ -311,7 +311,7 @@ export default function AuthScreen({
         <div className="promo-panel">
           <div className="promo-copy">
             <p className="promo-eyebrow">Seamless work experience</p>
-            <h2>Plan, track, and deliver projects faster with a powerful, intuitive workspace built for modern teams.</h2>
+            <h2 >Plan, track, and deliver projects faster with a powerful, intuitive workspace built for modern teams.</h2>
             <p>Optimize daily workflows with a sleek experience designed for teams and leaders.</p>
           </div>
 
@@ -338,7 +338,7 @@ export default function AuthScreen({
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
               <Sparkles size={18} />
-              Live sync
+              Live Tasks
             </motion.div>
           </div>
 
